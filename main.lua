@@ -1,11 +1,24 @@
------------------------------------------------------------------------------------------
--- Desenvolvedor: Mateus Gabriel
------------------------------------------------------------------------------------------
---aplicando física
+--Aplicando física
 local physics = require("physics")
 physics.start()
 
+--Variaveis/Grupos
 local meteoros = display.newGroup()
+local speed = 5500
+local mt -- recebe a criação de meteoros
+local dtc -- recebe o incrementador da distância
+local distanciaTxt
+local distancia = 0
+
+--Funções
+local criaMeteoros = {}
+local distanciaUp = {}
+
+--Variaveis Dimensoes
+_W = display.contentWidth
+_H = display.contentHeight
+_W2 = display.contentCenterX
+_H2 = display.contentCenterY
 
 -- background e scroll das estrelas
 local background = display.newImage("images/ceu.fw.png")
@@ -24,7 +37,23 @@ estrelas2.speed = 3
 
 local meteorito = display.newImage("images/metero.png")
 meteorito.x = 0
-meteorito.y = -100
+meteorito.y = -110
+
+local meteoritoTeto = display.newImage("images/metero.png")
+meteoritoTeto.x = 400
+meteoritoTeto.y = -110
+physics.addBody(meteoritoTeto, "static")
+
+local chao = display.newImage("images/chao.png")
+chao.x = 400
+chao.y = 672
+physics.addBody(chao, "static")
+
+-- Nave
+local nave = display.newImage("images/nave.png")
+nave.x = 100
+nave.y = 200
+physics.addBody(nave, "dynamic")
 
 -- Função para scroll infinito das estrelas
 function scrollEstrelas(self, event)
@@ -35,40 +64,51 @@ function scrollEstrelas(self, event)
   end
 end
 
-function moveMeteoros(self, event)
-  if self.x < -120 then
-    self.x = 1200
-    self.y = math.random( 400 )
-  else
-    self.x = self.x - self.speed
-  end
+local function onLocalCollision( self, event )
+	if ( event.phase == "began" ) then
+		self:removeSelf()
+	end
 end
 
-function novoMeteoro()
-  meteoro1 = display.newImage("images/cometaAzul.png")
-  meteoro1.x = 1200
-  meteoro1.y = 200 + math.random( 200 )
-  meteoro1.speed = 6
-  --meteoro1.initY = meteoro1.y
-  --meteoro1.amp = math.random(20, 250)
-  --meteoro1.angle = math.random(1, 360)
-  physics.addBody(meteoro1, "static", {density=.1, bounce=0.1, friction=.2})
-  --physics.addBody(meteoro2, "static", {density=.1, bounce=0.1, friction=.2})
-  --meteoros:insert(metero1)
-  meteoro1.enterFrame = moveMeteoros
-  Runtime:addEventListener("enterFrame", meteoro1)
-  --meteoro2.enterFrame = moveMeteoros
-  --Runtime:addEventListener("enterFrame", meteoro1)
+function criaMeteoros(event)
+  meteoro = display.newImage("images/cometaAzul.png")
+  meteoro.x = _W + 150
+  meteoro.y = math.random(15, _H - 45 )
+  meteoro.name = 'meteoroAzul'
+  physics.addBody(meteoro, "kinematic")
+  meteoro.isSensor = true
+  --meteoros:insert(meteoro)
+
+  transition.to( meteoro, {time = speed, x = -150, y = meteoro.y})
+end
+tm = timer.performWithDelay( 1800, criaMeteoros, 0 )
+
+-- Adicionando distância
+--function setupScore( )
+distanciaTxt = display.newText("Distância 0 km", _W2 - 50, 620, native.systemFontBold, 20)
+--end
+
+function distanciaUp()
+   --incrementando a distancia
+    distancia = distancia + 100
+    distanciaTxt.text = string.format("Distância %d", distancia)
 end
 
-timer.performWithDelay( 380, novoMeteoro)
+dtc = timer.performWithDelay( 1000, distanciaUp, 0 )
 
--- Nave
-nave = display.newImage("images/nave.png")
-nave.x = 100
-nave.y = 100
+-- Adicionando combustível
+--function setupScore( )
+combustivelTxt = display.newText("Combustível 0 mil/l", _W2 - 50, 620, native.systemFontBold, 20)
+--end
 
-physics.addBody(nave, "dynamic")
+function combustivelUp()
+   --incrementando a distancia
+    combustivel = combustivel + 100
+    combustivelTxt.text = string.format("Combustivel %d", combustivel)
+end
+
+cbt = timer.performWithDelay( 1000, combustivelUp, 0 )
+
 -- Nave Sprite
 --local options = { width = 88.5, height = 56, numFrames = 2}
 --local naveSheet = graphics.newImageSheet("images/naveSprite.png", options)
@@ -83,7 +123,7 @@ physics.addBody(nave, "dynamic")
 --physics.addBody(nave, "static")
 --nave:play()
 
-  -- Aplica força ao clicar na nave
+-- Aplica força ao clicar na nave
 function ativarNave(self, event)
   self:applyForce(0, -2, self.x, self.y)
 end
@@ -102,13 +142,14 @@ function touchScreen(event)
   end
 end
 
--- Aplica o scroll as estrelas
+-- Atrela funções à eventos
 estrelas1.enterFrame = scrollEstrelas
+estrelas2.enterFrame = scrollEstrelas
+nave.collision = onLocalCollision
+--meteoro1.enterFrame = moveMeteoros
+
 --Evento "enterFrame" ocorre no intervalo FPS(frames per second) da aplicação
 Runtime:addEventListener("enterFrame", estrelas1)
-
-estrelas2.enterFrame = scrollEstrelas
 Runtime:addEventListener("enterFrame", estrelas2)
-
--- Adiciona evento de toque na tela
+nave:addEventListener( "collision")
 Runtime:addEventListener("touch", touchScreen)
