@@ -9,10 +9,22 @@ local mt -- recebe a criação de meteoros
 local dtc -- recebe o incrementador da distância
 local distanciaTxt
 local distancia = 0
+local distanciaAux = 500
+local cbt -- recebe o incrementador do combustível
+local combustivelTxt
+local combustivel = 10000
+local pts -- recebe o incrementador do combustível
+local pontosTxt
+local pontos = 10
+local pcp -- receber f decrementador de combustível e pontos
 
 --Funções
 local criaMeteoros = {}
 local distanciaUp = {}
+local combustivelUp = {}
+local pontosUp = {}
+local perderCP = {}
+local perderCombustivelPontosPorDistancia = {}
 
 --Variaveis Dimensoes
 _W = display.contentWidth
@@ -53,6 +65,7 @@ physics.addBody(chao, "static")
 local nave = display.newImage("images/nave.png")
 nave.x = 100
 nave.y = 200
+nave.name = 'nave'
 physics.addBody(nave, "dynamic")
 
 -- Função para scroll infinito das estrelas
@@ -84,44 +97,51 @@ end
 tm = timer.performWithDelay( 1800, criaMeteoros, 0 )
 
 -- Adicionando distância
---function setupScore( )
-distanciaTxt = display.newText("Distância 0 km", _W2 - 50, 620, native.systemFontBold, 20)
---end
-
-function distanciaUp()
-   --incrementando a distancia
-    distancia = distancia + 100
-    distanciaTxt.text = string.format("Distância %d", distancia)
-end
-
-dtc = timer.performWithDelay( 1000, distanciaUp, 0 )
+  --function( )
+  distanciaTxt = display.newText("Distância 0 km", _W2 - 200, 620, native.systemFontBold, 20)
+  --end
+  function distanciaUp()
+     --incrementando a distancia
+      distancia = distancia + 50
+      distanciaTxt.text = string.format("Distância %d", distancia)
+  end
+  dtc = timer.performWithDelay( 1000, distanciaUp, 0 )
 
 -- Adicionando combustível
---function setupScore( )
-combustivelTxt = display.newText("Combustível 0 mil/l", _W2 - 50, 620, native.systemFontBold, 20)
---end
+  --function( )
+  combustivelTxt = display.newText("Combustível 0 mil/l", _W2 - (-1), 620, native.systemFontBold, 20)
+  --end
+  function combustivelUp()
+     --incrementando a distancia
+      --combustivel = combustivel + 100
+      combustivelTxt.text = string.format("Combustível %d", combustivel)
+  end
+  cbt = timer.performWithDelay( 1000, combustivelUp, 0 )
 
-function combustivelUp()
-   --incrementando a distancia
-    combustivel = combustivel + 100
-    combustivelTxt.text = string.format("Combustivel %d", combustivel)
-end
+-- Adicionando pontos
+  --function( )
+  pontosTxt = display.newText("Pontos 0", _W2 - (-180), 620, native.systemFontBold, 20)
+  --end
+  function pontosUp()
+     --incrementando a distancia
+      --pontos = pontos + 100
+      pontosTxt.text = string.format("Pontos %d", pontos)
+  end
+ pts = timer.performWithDelay( 1000, pontosUp, 0 )
 
-cbt = timer.performWithDelay( 1000, combustivelUp, 0 )
+-- Adicionando decrementador de combustível e pontos a partir da distância
+  function perderCP ()
+    combustivel = combustivel - 1000
+    pontos = pontos - 2
+  end
 
--- Nave Sprite
---local options = { width = 88.5, height = 56, numFrames = 2}
---local naveSheet = graphics.newImageSheet("images/naveSprite.png", options)
---local naveSequenceData = {
---  {name = "fly", start = 1, count = 4, time = 300, loopCount = 0}
---}
--- Nave
---local nave = display.newSprite(naveSheet, naveSequenceData)
---nave.x = 100
---nave.y = 100
---nave.name = 'nave'
---physics.addBody(nave, "static")
---nave:play()
+  function perderCombustivelPontosPorDistancia()
+    if (distancia == distanciaAux) then
+      perderCP()
+      distanciaAux = distanciaAux + 500
+    end
+  end
+  pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
 
 -- Aplica força ao clicar na nave
 function ativarNave(self, event)

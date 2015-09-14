@@ -1,12 +1,12 @@
 application =
 {
 
-	--[[content =
+	content =
 	{
-		width = 1920,
-		height = 1080,
-		scale = "letterBox",
-		fps = 30,
+		--width = 1920,
+		--height = 1080,
+		scale = "adaptative" --,zoomEven, letterbox, adaptative, zoomStretch
+		--fps = 30,
 
 		--[[
 		imageSuffix =
