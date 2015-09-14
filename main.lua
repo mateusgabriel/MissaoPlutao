@@ -17,6 +17,7 @@ local pts -- recebe o incrementador do combustível
 local pontosTxt
 local pontos = 10
 local pcp -- receber f decrementador de combustível e pontos
+local erg -- recebe a criação de blocos de energia
 
 --Funções
 local criaMeteoros = {}
@@ -25,6 +26,7 @@ local combustivelUp = {}
 local pontosUp = {}
 local perderCP = {}
 local perderCombustivelPontosPorDistancia = {}
+local criaEnergia = {}
 
 --Variaveis Dimensoes
 _W = display.contentWidth
@@ -83,6 +85,20 @@ local function onLocalCollision( self, event )
 	end
 end
 
+function criaEnergia(event)
+  --local rnd = math.floor(math.random() * 3) + 1
+  energia = display.newImage("images/cuboEnergia.png")
+  energia.x = _W
+  energia.y = math.random(15, _H - 45 )
+  energia.name = 'energia'
+  physics.addBody( energia, "kinematic" )
+  energia.isSensor = true
+  --energias:insert(energia)
+
+  transition.to( energia, {time = speed, x = -30, y = energia.y})
+end
+erg = timer.performWithDelay( 5000, criaEnergia, 0 )
+
 function criaMeteoros(event)
   meteoro = display.newImage("images/cometaAzul.png")
   meteoro.x = _W + 150
@@ -94,7 +110,7 @@ function criaMeteoros(event)
 
   transition.to( meteoro, {time = speed, x = -150, y = meteoro.y})
 end
-tm = timer.performWithDelay( 1800, criaMeteoros, 0 )
+mt = timer.performWithDelay( 1800, criaMeteoros, 0 )
 
 -- Adicionando distância
   --function( )
@@ -166,6 +182,7 @@ end
 estrelas1.enterFrame = scrollEstrelas
 estrelas2.enterFrame = scrollEstrelas
 nave.collision = onLocalCollision
+--energia.collision = onLocalCollision
 --meteoro1.enterFrame = moveMeteoros
 
 --Evento "enterFrame" ocorre no intervalo FPS(frames per second) da aplicação
