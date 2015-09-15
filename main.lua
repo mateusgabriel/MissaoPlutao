@@ -114,34 +114,34 @@ mt = timer.performWithDelay( 1800, criaMeteoros, 0 )
 
 -- Adicionando distância
   --function( )
-  distanciaTxt = display.newText("Distância 0 km", _W2 - 200, 620, native.systemFontBold, 20)
+  distanciaTxt = display.newText("Distância 0 km", _W2 - 213, 620, native.systemFontBold, 20)
   --end
   function distanciaUp()
      --incrementando a distancia
       distancia = distancia + 50
-      distanciaTxt.text = string.format("Distância %d", distancia)
+      distanciaTxt.text = string.format("Distância %d km", distancia)
   end
   dtc = timer.performWithDelay( 1000, distanciaUp, 0 )
 
 -- Adicionando combustível
   --function( )
-  combustivelTxt = display.newText("Combustível 0 mil/l", _W2 - (-1), 620, native.systemFontBold, 20)
+  combustivelTxt = display.newText("Combustível 0 mil/l", _W2 + 10, 620, native.systemFontBold, 20)
   --end
   function combustivelUp()
      --incrementando a distancia
       --combustivel = combustivel + 100
-      combustivelTxt.text = string.format("Combustível %d", combustivel)
+      combustivelTxt.text = string.format("Combustível %d mil/l", combustivel)
   end
   cbt = timer.performWithDelay( 1000, combustivelUp, 0 )
 
 -- Adicionando pontos
   --function( )
-  pontosTxt = display.newText("Pontos 0", _W2 - (-180), 620, native.systemFontBold, 20)
+  pontosTxt = display.newText("0 Pontos", _W2 - (-190), 620, native.systemFontBold, 20)
   --end
   function pontosUp()
      --incrementando a distancia
       --pontos = pontos + 100
-      pontosTxt.text = string.format("Pontos %d", pontos)
+      pontosTxt.text = string.format("%d Pontos", pontos)
   end
  pts = timer.performWithDelay( 1000, pontosUp, 0 )
 
