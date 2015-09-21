@@ -90,6 +90,8 @@ function criaEnergia(event)
   energia = display.newImage("images/cuboEnergia.png")
   energia.x = _W
   energia.y = math.random(15, _H - 45 )
+  -- Teste
+  meteoro.initY = math.random(_H - 200)
   energia.name = 'energia'
   physics.addBody( energia, "kinematic" )
   energia.isSensor = true
@@ -103,6 +105,8 @@ function criaMeteoros(event)
   meteoro = display.newImage("images/cometaAzul.png")
   meteoro.x = _W + 150
   meteoro.y = math.random(15, _H - 45 )
+  -- Teste
+  meteoro.initY = math.random(_H - 200)
   meteoro.name = 'meteoroAzul'
   physics.addBody(meteoro, "kinematic")
   meteoro.isSensor = true
