@@ -4,6 +4,7 @@ physics.start()
 
 --Variaveis/Grupos
 local meteoros = display.newGroup()
+--local energia -- Objeto que representa o combustível
 local speed = 5500
 local mt -- recebe a criação de meteoros
 local dtc -- recebe o incrementador da distância
@@ -25,8 +26,11 @@ local distanciaUp = {}
 local combustivelUp = {}
 local pontosUp = {}
 local perderCP = {}
+local ganharCP = {}
 local perderCombustivelPontosPorDistancia = {}
 local criaEnergia = {}
+local onLocalCollision = {}
+local onLocalCollision2 = {}
 
 --Variaveis Dimensoes
 _W = display.contentWidth
@@ -79,9 +83,12 @@ function scrollEstrelas(self, event)
   end
 end
 
-local function onLocalCollision( self, event )
-	if ( event.phase == "began" ) then
+function onLocalCollision( self, event )
+	if ( event.phase == "began" and event.other.name ~= 'energia') then
 		self:removeSelf()
+  else
+    event.other:removeSelf()
+    ganharCP()
 	end
 end
 
@@ -91,13 +98,13 @@ function criaEnergia(event)
   energia.x = _W
   energia.y = math.random(15, _H - 45 )
   -- Teste
-  meteoro.initY = math.random(_H - 200)
+  energia.initY = math.random(_H - 200)
   energia.name = 'energia'
   physics.addBody( energia, "kinematic" )
   energia.isSensor = true
   --energias:insert(energia)
 
-  transition.to( energia, {time = speed, x = -30, y = energia.y})
+  transition.to( energia, {time = speed, x = -30, y = energia.initY})
 end
 erg = timer.performWithDelay( 5000, criaEnergia, 0 )
 
@@ -112,7 +119,7 @@ function criaMeteoros(event)
   meteoro.isSensor = true
   --meteoros:insert(meteoro)
 
-  transition.to( meteoro, {time = speed, x = -150, y = meteoro.y})
+  transition.to( meteoro, {time = speed, x = -150, y = meteoro.initY})
 end
 mt = timer.performWithDelay( 1800, criaMeteoros, 0 )
 
@@ -155,6 +162,11 @@ mt = timer.performWithDelay( 1800, criaMeteoros, 0 )
     pontos = pontos - 2
   end
 
+  function ganharCP ()
+    combustivel = combustivel + 1000
+    pontos = pontos + 2
+  end
+
   function perderCombustivelPontosPorDistancia()
     if (distancia == distanciaAux) then
       perderCP()
@@ -186,7 +198,7 @@ end
 estrelas1.enterFrame = scrollEstrelas
 estrelas2.enterFrame = scrollEstrelas
 nave.collision = onLocalCollision
---energia.collision = onLocalCollision
+
 --meteoro1.enterFrame = moveMeteoros
 
 --Evento "enterFrame" ocorre no intervalo FPS(frames per second) da aplicação
