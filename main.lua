@@ -30,7 +30,6 @@ local ganharCP = {}
 local perderCombustivelPontosPorDistancia = {}
 local criaEnergia = {}
 local onLocalCollision = {}
-local onLocalCollision2 = {}
 
 --Variaveis Dimensoes
 _W = display.contentWidth
